@@ -50,7 +50,7 @@
 <div id="content">
 
 	<form id="side_panel">
-		<h1>Random Data in the Future</h1>
+		<h1>NYPD Summons Data by Precinct over Time</h1>
 		<section><div id="legend"></div></section>
 		<section>
 			<div id="renderer_form" class="toggler">
@@ -67,7 +67,7 @@
 		<section>
 			<div id="offset_form">
 				<label for="stack">
-					<input type="radio" name="offset" id="stack" value="zero" checked>
+					<input type="radio" name="offset" id="stack" value="zero">
 					<span>stack</span>
 				</label>
 				<label for="stream">
@@ -79,7 +79,7 @@
 					<span>pct</span>
 				</label>
 				<label for="value">
-					<input type="radio" name="offset" id="value" value="value">
+					<input type="radio" name="offset" id="value" value="value" checked="checked">
 					<span>value</span>
 				</label>
 			</div>
@@ -132,7 +132,7 @@ var palette = new Rickshaw.Color.Palette( { scheme: 'classic9' } );
 //console.log(seriesData.length)
 var series1 = []
 
-for (var i=0; i < seriesData.length; i++){
+for (var i=0; i < seriesData.length && i < 200; i++){
     series1.push(
 		{
 			color: palette.color(),
@@ -146,6 +146,7 @@ graph = new Rickshaw.Graph( {
 	width: 900,
 	height: 500,
 	renderer: 'area',
+	//renderer: 'value',
 	stroke: true,
 	preserve: true,
 	series: series1
@@ -193,6 +194,7 @@ graph = new Rickshaw.Graph( {
 } );
 */
 
+graph.renderer.unstack = true;
 graph.render();
 
 var slider = new Rickshaw.Graph.RangeSlider( {
@@ -325,42 +327,22 @@ addAnnotation(true);
       //var seriesData = [ [], [], [], [], [], [], [], [], [] ];
       var seriesData = []
 
-      for( var j = 0 ; j < data.getNumberOfRows(); j++){
+      for( var i = 1 ; i < data.getNumberOfColumns(); i++){
       row = []
-      for( var i = 0 ; i < data.getNumberOfColumns(); i++){
+      for( var j = 1 ; j < data.getNumberOfRows(); j++){
         //console.log(data.getValue(j,i))
         //if (i==0) { console.log(data.getValue(j,i).getTime()) }
-        var time 
-        if (i==0) { 
-            //row.push(data.getValue(j,i).getTime()) 
-            time = data.getValue(j,i).getTime() /1000
-        } else {
+            time = data.getValue(j,0).getTime() /1000
             row.push({x: time, y: data.getValue(j,i)})
         }
-      /*
-        //console.log(data.getColumnLabel(i)+ ' ' + data.getColumnId(i))
-        map1[data.getColumnLabel(i)] = data.getColumnId(i)
-        var len1 = 3-((""+parseInt(data.getColumnLabel(i))).length)
-        var s = ''
-        for (var j = 0; j < len1; j++){
-            s += ' ';
-        }
-        list1.push(s+data.getColumnLabel(i))
-        */
+        //console.log(row)
 
-      }
         seriesData.push(row)
       }
 
+      
       //console.log(seriesData)
       //console.log('seriesData: ' + seriesData)
-
-      //console.log(list1.sort())
-      var list1 = list1.sort()
-      for (var item in list1){
-        //html1 += ('<option value="'+map1[$.trim(list1[item])]+ '">'+ list1[item] +'</option>')
-      }
-
 
       showgraph(seriesData,list1)
     }
